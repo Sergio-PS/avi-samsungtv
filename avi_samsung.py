@@ -21,25 +21,40 @@ extension = ".avi"
 cwd = os.getcwd() # Absolute Path
 #cwd = "." # Relative Path
 
-result_folder = "samsungtv_result"
+results_folder = "samsungtv_results"
 backups_folder = "samsungtv_backups"
 
 separator = os.path.sep
 
 # Def Functions
+def get_items_from_path(path, remove):
+    for item in remove:
+        path = path.replace(item, "")
+
+    return path
 
 # Get list with files that contain extension
 def get_dir_files_names_with_extension(extension, cwd):
     filelist = []
     namelist = []
+    dirlist = []
     
     for root, dirs, files in os.walk(cwd):
         for name in files:
             if name.endswith(extension):
-                filelist.append(os.path.join(root, name))
+                file = os.path.join(root, name)
+
+                filelist.append(file)
                 namelist.append(name)
 
-    return filelist, namelist
+                remove = [cwd, name]
+                item = get_items_from_path(file, remove)
+                if item not in dirlist:
+                    print(item)
+                    dirlist.append(item)
+                
+    
+    return filelist, namelist, dirlist
 
 '''
 def clean_dir_files_names(filelist):
@@ -61,40 +76,36 @@ def clean_dir_files_names(filelist):
     
     print("Filenames cleaned")
 '''
-def copy_directory_structure(cwd, result_folder, filelist, input_filepath):
-    results_folder_path = cwd + separator + result_folder
-    dir_file_input_path = input_filepath.replace(cwd + separator, "")
+'''
+def copy_directory_structure(cwd, folder):
 
-    for dirs in os.walk(results_folder_path):
-        try:
-            splitted_path = dir_file_input_path.split(separator)
-            print(splitted_path)
-            '''
-            splitted_path.pop(-1) # Left with directory or directories
-            if not os.path.exists(dir_file_input_path[0]):
-                mkdir(dir_file_input_path[0])
-            '''
-        except:
-            print("error")
-            # Future log file
-            
+    def ignore_data(dir, files):
+        return [f for f in files if os.path.isfile(os.path.join(dir, f))]  
 
+    shutil.copytree(cwd,
+        cwd + separator + "folder",
+        ignore=ignore_data)
+'''
 # Script
 filelist = []
 namelist = []
+dirlist = []
+filelist, namelist, dirlist = get_dir_files_names_with_extension(extension, cwd)
 
 # Create directory for results
-if not os.path.exists(result_folder):
-    os.mkdir(result_folder)
+if not os.path.exists(results_folder):
+    os.mkdir(results_folder)
 
 if enable_backup and not os.path.exists(backups_folder):
     os.mkdir(backups_folder)
 
-filelist, namelist = get_dir_files_names_with_extension(extension, cwd)
+#get_items_from_path(filelist[1], [cwd, "\Diamante De Sangre [CD1][DVDRIP-AC3 5.1][Spanish][www.pctestrenos.com][www.newpct.com].avi"])
+print(dirlist)
+'''
 for filename in filelist:
-    copy_directory_structure(cwd, backups_folder, filelist, filename)
-    copy_directory_structure(cwd, result_folder, filelist, filename)
-
+    copy_directory_structure(cwd, backups_folder)
+    copy_directory_structure(cwd, results_folder)
+'''
 '''
 for i in range(len(filelist)):
     input_filepath = filelist[i]
