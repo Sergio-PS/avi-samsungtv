@@ -1,0 +1,7 @@
+-overwriting by auto responding console (yes | ./script) (dir & echo foo) (dir ; echo foo)
+https://stackoverflow.com/questions/55597797/detect-whether-current-shell-is-powershell-in-python
+
+-setup counter and time status
+
+-cleaning names
+
